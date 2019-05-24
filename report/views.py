@@ -13,8 +13,10 @@ class MayCalendar(calendar.HTMLCalendar):
     def formatday(self, day, weekday):
 
         user = self.user
-        t_expense = self.total_expense(day)
+        t_expense = self.trans_expense(day)
         m_expense = self.meal_expense(day)
+        e_expense = self.etc_expense(day)
+        total_expense = self.total_expense(day)
 
         if day == 0:
             return '<td class="%s">&nbsp;</td>' % self.cssclass_noday
@@ -22,11 +24,11 @@ class MayCalendar(calendar.HTMLCalendar):
             a = 10000
             test = "{:,}".format(a)
             return '<td class="%s"><a id="day" href="/detail/%d">%d</a>' \
-                   '<div id="food">식비 %s</div>' \
-                   '<div id="trans">&nbsp;</div>' \
-                   '<div id="etc">기타 10000</div>' \
-                   '<div>4</div></td>' \
-                   % (self.cssclasses[weekday], day, day, m_expense)
+                   '<div id="food">%s</div>' \
+                   '<div id="trans">%s</div>' \
+                   '<div id="etc">%s</div>' \
+                   '<div>%s</div></td>' \
+                   % (self.cssclasses[weekday], day, day, m_expense, t_expense, e_expense, total_expense)
 
     def formatmonthname(self, theyear, themonth, withyear=True):
         """
@@ -44,6 +46,9 @@ class MayCalendar(calendar.HTMLCalendar):
         t_expense = 0
         for event in event_list:
             t_expense += event.expense
+
+        if not event_list:
+            t_expense = '&nbsp;'
         return t_expense
 
     def meal_expense(self, day):
@@ -52,16 +57,54 @@ class MayCalendar(calendar.HTMLCalendar):
         for event in event_list:
             meal_expense += event.expense
 
-        if meal_expense == 0:
-            meal_expense = ''
+        if not event_list:
+            meal_expense = '&nbsp;'
 
         return str(meal_expense)
 
+    def trans_expense(self, day):
+        event_list = Event.objects.filter(f_day=day, category_id=2, author=self.user)
+        trans_expense = 0
+        for event in event_list:
+            trans_expense += event.expense
+
+        if not event_list:
+            print(f'----------------------------{event_list}]')
+            trans_expense = '&nbsp;'
+
+        return str(trans_expense)
+
+    def etc_expense(self, day):
+        event_list = Event.objects.filter(f_day=day, category_id=3, author=self.user)
+        etc_expense = 0
+        for event in event_list:
+            etc_expense += event.expense
+
+        if not event_list:
+            etc_expense = '&nbsp;'
+
+        return str(etc_expense)
+
 def mayCalendar(request):
     mayCal = MayCalendar(calendar.SUNDAY)
-    mayCal.user = request.user
+
+    user = request.user
+    if user.id == None:
+        user = None
+    mayCal.user = user
+
+    total_meal = calculate(user, 1)
+    total_trans = calculate(user, 2)
+    total_etc = calculate(user, 3)
+
     cal = mayCal.formatmonth(2019,5)
-    return render(request, 'report/calendar.html', {'object_list': mark_safe(cal)})
+
+    context = {'object_list': mark_safe(cal),
+               'total_meal':total_meal,
+               'total_trans': total_trans,
+               'total_etc' : total_etc,
+               }
+    return render(request, 'report/calendar.html', context )
 
 @login_required
 def event_create(request, day_number):
@@ -117,3 +160,41 @@ def day_detail(request, day_number):
     return render(request, 'report/day_detail.html', {'day_info': day_info,
                                                    'event_form': event_form,
                                                    'events': events})
+
+
+
+
+def calculate(user, category):
+
+    total = 0
+    event_list = Event.objects.filter(author=user, category_id=category)
+    for event in event_list:
+        total += event.expense
+
+    return total
+
+# def max(user):
+#     days = Day.objects.all()
+#
+#     expense_list = []
+#     for day in days:
+#         event_list = Event.objects.filter(author=user, f_day=day)
+#         total = 0
+#         for event in event_list:
+#             total += event.expense
+#             expense_list.append(total)
+#
+#     day_number = expense_list.index(max(expense_list))
+
+
+
+
+
+# def calcul2(user, category):
+#
+#     def total_expense(self, day):
+#         event_list = Event.objects.filter(author=self.user, f_day=day)
+#         t_expense = 0
+#         for event in event_list:
+#             t_expense += event.expense
+
