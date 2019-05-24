@@ -8,7 +8,13 @@ from django.utils.safestring import mark_safe
 
 class MayCalendar(calendar.HTMLCalendar):
 
+    user = None
+
     def formatday(self, day, weekday):
+
+        user = self.user
+        t_expense = self.total_expense(day)
+        m_expense = self.meal_expense(day)
 
         if day == 0:
             return '<td class="%s">&nbsp;</td>' % self.cssclass_noday
@@ -20,7 +26,7 @@ class MayCalendar(calendar.HTMLCalendar):
                    '<div id="trans">&nbsp;</div>' \
                    '<div id="etc">기타 10000</div>' \
                    '<div>4</div></td>' \
-                   % (self.cssclasses[weekday], day, day, test)
+                   % (self.cssclasses[weekday], day, day, m_expense)
 
     def formatmonthname(self, theyear, themonth, withyear=True):
         """
@@ -33,8 +39,27 @@ class MayCalendar(calendar.HTMLCalendar):
         return '<tr><th colspan="7" class="%s" id="title">%s</th></tr>' % (
             self.cssclass_month_head, s)
 
+    def total_expense(self, day):
+        event_list = Event.objects.filter(author=self.user, f_day=day)
+        t_expense = 0
+        for event in event_list:
+            t_expense += event.expense
+        return t_expense
+
+    def meal_expense(self, day):
+        event_list = Event.objects.filter(f_day=day, category_id=1, author=self.user)
+        meal_expense = 0
+        for event in event_list:
+            meal_expense += event.expense
+
+        if meal_expense == 0:
+            meal_expense = ''
+
+        return str(meal_expense)
+
 def mayCalendar(request):
     mayCal = MayCalendar(calendar.SUNDAY)
+    mayCal.user = request.user
     cal = mayCal.formatmonth(2019,5)
     return render(request, 'report/calendar.html', {'object_list': mark_safe(cal)})
 
