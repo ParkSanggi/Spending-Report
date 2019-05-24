@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}
+Sign Up Complete
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col"></div>
+    <div class="col-6">
+        <div class="alert alert-success">{{username}}님, 가입이 완료되었어요.</div>
+        <a href="{% url 'account:signin' %}" class="btn btn-outline-info">로그인</a>
+    </div>
+    <div class="col"></div>
+</div>
+{% endblock %}

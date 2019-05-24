@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}
+Event Update
+{% endblock %}
+
+{% block content %}
+<div class="container">
+<div class="row">
+    <div class="col"></div>
+    <div class="col-6">
+        <form action="" method="post">
+            {% csrf_token %}
+            {{event_form.as_p}}
+            <input type="submit" value="수정" class="btn btn-dark btn-sm">
+        </form>
+    </div>
+    <div class="col"></div>
+</div>
+</div>
+{% endblock %}

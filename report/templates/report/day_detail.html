@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %}
+Day Detail
+{% endblock %}
+
+{% block content %}
+<div class="container">
+<div class="row">
+    <div class="col"></div>
+    <div class="col-7">
+        <table class="table table-strped">
+        <thead>
+        <tr>
+        <th colspan="10" class="align-left" style="background-color:#262626; color:#ffffff; padding-bottom:5px;"><h5>내역 추가</h5></th>
+        </tr>
+        </thead>
+        </table>
+        <form action="{% url 'report:create' day_info.m_day %}" method="post">
+            {% csrf_token %}
+            {{event_form.as_p}}
+            <input type="submit" value="완료" class="btn btn-outline-dark btn-sm" >
+        </form>
+        <br>
+        <div>
+        {% include 'report/event_list.html' %}
+        </div>
+    </div>
+    <div class="col">
+
+    </div>
+</div>
+</div>
+{% endblock %}

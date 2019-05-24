@@ -1,0 +1,51 @@
+<style>
+    #cat_name{
+    background-color :#1ABC9C;
+    color:#ffffff;
+    padding-top:4px;
+    padding-bottom:4px;
+    padding-left:20px;
+    padding-right:20px;
+    border-radius: 50px / 50px;
+    }
+
+    .expense{
+    text-align: right;
+    font-weight: bold;
+    color:#16A085;
+    }
+</style>
+
+<table class="table table-strped">
+    <thead>
+    <tr>
+        <th colspan="10" class="align-left" style="background-color:#1ABC9C; color:#ffffff; padding-bottom:5px;"><h5>지출 내역</h5></th>
+    </tr>
+    <tr>
+        <th colspan="10" class="align-left">총 {{events.count}}건</th>
+    </tr>
+    </thead>
+    {% for event in events %}
+    <tr>
+        <td><strong id="cat_name">{{event.category.name}}</strong></td>
+        <td><strong>{{event.description}}</strong><br><small class="text-muted">{{event.created}}</small></td>
+        <td><div class="expense">
+            <script type="text/javascript">
+            var a = "{{event.expense}}"
+            function numberWithCommas(x) {
+                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+            document.write(numberWithCommas(a))
+            </script>원
+        </div></td>
+        <td>
+            <a href="{% url 'report:update' event.id %}" class="btn btn-outline-dark btn-sm">수정</a>
+            <a href="{% url 'report:delete' event.id %}" class="btn btn-outline-dark btn-sm">삭제</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% block extra_script %}
+<script type="text/javascript">
+</script>
+{% endblock %}
