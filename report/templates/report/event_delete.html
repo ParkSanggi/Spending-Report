@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}
+Event Delete
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col"></div>
+    <div class="col-6">
+        <form action="" method="post">
+            <div class="alert alert-danger">
+                해당 지출 내역을 삭제할까요?
+                &nbsp;분류 : {{event.category.name}}
+                &nbsp;&nbsp;&nbsp;내용 : {{event.description}}
+                &nbsp;&nbsp;&nbsp;금액 : {{event.expense}}원
+            </div>
+            {% csrf_token %}
+            <input type="submit" value="삭제" class="btn btn-outline-danger btn-sm">
+        </form>
+    </div>
+    <div class="col"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Sign Out
+{% endblock %}
+
+{% block content %}
+<style>
+    .alert{
+    background-color:#262626;
+    color:#ffffff;
+    }
+    .login{
+    background-color:#262626;
+    }
+    .home{
+    background-color:#1ABC9C;
+    }
+</style>
+<div class="row">
+    <div class="col"></div>
+    <div class="col-6">
+        <div class="alert alert-dark">로그아웃되었어요.</div>
+        <a href="{% url 'account:signin' %}" class="login btn" style="color:#ffffff;">로그인</a>
+        <a href="{% url 'report:calendar' %}" class="home btn" style="color:#ffffff;">홈으로</a>
+    </div>
+    <div class="col"></div>
+</div>
+{% endblock %}

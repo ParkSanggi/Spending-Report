@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}
+Calendar
+{% endblock %}
+
+{% block content %}
+<style>
+    .container {
+      margin: 0px;
+    }
+
+    .col-4{
+    background-color:#262626;
+    color:#ffffff;
+    }
+
+    #login{
+    color:#ffffff;
+    }
+
+    #logout{
+    color:#ffffff;
+    }
+
+    #signup{
+    color:#ffffff;
+    }
+
+    #title{
+    text-align: center;
+    background-color:#eeeeee;
+    color:#000000;
+    padding-top:5px;
+    padding-bottom:5px;
+    border-bottom: 7px outset #1ABC9C;
+    font-size: 30px;
+    }
+
+    #day{
+    color:#000000;
+    }
+
+    #food{
+    background-color:#B71C1C;
+    border-radius: 5px / 5px;
+    color:#ffffff;
+    width:90px;
+    }
+
+    #trans{
+    background-color:#FF5722;
+    border-radius: 5px / 5px;
+    color:#ffffff;
+    }
+
+    #etc{
+    background-color:#F1C40F;
+    border-radius: 5px / 5px;
+    color:#ffffff;
+    }
+
+    th{
+    padding-left:70px;
+    padding-right:70px;
+    background-color:#eeeeee;
+    }
+
+    td{
+    background-color:#eeeeee;
+    padding-bottom:34px;
+    }
+</style>
+<div class="container">
+<div class="row">
+    <div class="col-4">
+        <div class="row" style="height:10%;background-color:#4d4d4d; color:#A6ACAF; text-align: center; padding-top:20px">
+        <div class="col-12" >
+          {% if user.is_authenticated %}
+            안녕하세요, {{user}}님 반갑습니다.<br>
+            <a id="logout" href="{% url 'account:signout' %}">로그아웃</a>
+            {% else %}
+            로그인해주세요.<br>
+            <a id="login" href="{% url 'account:signin' %}">로그인</a>
+            &nbsp;
+            <a id="signup" href="{% url 'account:signup' %}">회원가입</a>
+            {% endif %}
+        </div>
+      </div>
+         <div class="row">
+        <div class="col-12">
+          <div id="menu">
+            > 월간 식비 통계<br>
+            > 월간 교통비 통계<br>
+            > 월간 기타 통계<br>
+        </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-8">
+        {{object_list}}
+    </div>
+  </div>
+</div>
+{% endblock %}
